@@ -1,9 +1,16 @@
 using IMS.WebApp.Components;
+using IMS.Plugins.InMemory;
+using IMS.UseCases.Inventories;
+using IMS.UseCases.Inventories.Interfaces;
+using IMS.UseCases.PluginInterfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// IOC container (interface, konkret implementation)
+// Man bruger interface, konkret implementation så IOC kender til mappingen mellem interface og implementation.
 builder.Services.AddRazorComponents();
+builder.Services.AddSingleton<IInventoryRepository, InventoryRepository>();
+builder.Services.AddTransient<IViewInventoriesByNameUseCase, ViewInventoriesByNameUseCase>();
 
 var app = builder.Build();
 
