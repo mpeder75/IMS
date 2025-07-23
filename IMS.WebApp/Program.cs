@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Man bruger interface, konkret implementation så IOC kender til mappingen mellem interface og implementation.
 builder.Services.AddRazorComponents();
 builder.Services.AddSingleton<IInventoryRepository, InventoryRepository>();
+builder.Services.AddTransient<IAddInventoryUseCase, AddInventoryUseCase>();
 builder.Services.AddTransient<IViewInventoriesByNameUseCase, ViewInventoriesByNameUseCase>();
 
 var app = builder.Build();

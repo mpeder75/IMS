@@ -18,4 +18,3 @@ public class ViewInventoriesByNameUseCase : IViewInventoriesByNameUseCase
         return await _inventoryRepository.GetInventoriesByAsync(name);
     }
 }
-
