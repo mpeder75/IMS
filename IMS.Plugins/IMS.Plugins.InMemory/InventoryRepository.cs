@@ -29,18 +29,44 @@ public class InventoryRepository : IInventoryRepository
     public Task AddInventoryAsync(Inventory inventory)
     {
         // Check hvis inventory findes i forvejen, hvis den gør returneres den 
-        if (_inventories.Any(x => x.InventoryName.Equals(inventory.InventoryName, 
+        if (_inventories.Any(x => x.InventoryName.Equals(inventory.InventoryName,
                 StringComparison.OrdinalIgnoreCase)))
-        {
             return Task.CompletedTask;
-        }
 
         // Hvis inventory ikke findes, så får den et Id, og tilføjes til Listen
-        var maxId =  _inventories.Max(i => i.InventoryId);
+        var maxId = _inventories.Max(i => i.InventoryId);
         inventory.InventoryId = maxId + 1;
 
         _inventories.Add(inventory);
 
         return Task.CompletedTask;
+    }
+
+    public Task UpdateInventoryAsync(Inventory inventory)
+    {
+        if (_inventories.Any(x => x.InventoryId != inventory.InventoryId &&
+                                  x.InventoryName.Equals(inventory.InventoryName, StringComparison.OrdinalIgnoreCase)))
+        {
+            return Task.CompletedTask;
+        }
+        
+        // Find inventory i listen
+        var inventoryToUpdate = _inventories
+            .FirstOrDefault(x => x.InventoryId == inventory.InventoryId);
+
+        // Hvis inventory findes(altså den ikker er null), så opdateres dets værdier
+        if (inventoryToUpdate is not null)
+        {
+            inventoryToUpdate.InventoryName = inventory.InventoryName;
+            inventoryToUpdate.Quantity = inventory.Quantity;
+            inventoryToUpdate.Price = inventory.Price;
+        }
+
+        return Task.CompletedTask;
+    }
+
+    public async Task<Inventory> GetInventoryByIdAsync(int id)
+    { 
+       return await Task.FromResult(_inventories.FirstOrDefault(x => x.InventoryId == id));
     }
 }
