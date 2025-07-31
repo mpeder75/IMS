@@ -10,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // IOC container (interface, konkret implementation)
 // Man bruger interface, konkret implementation så IOC kender til mappingen mellem interface og implementation.
-builder.Services.AddRazorComponents();
+// AddInteractiveServerComponents opsætter Server Interactivity
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 builder.Services.AddSingleton<IInventoryRepository, InventoryRepository>();
 builder.Services.AddSingleton<IProductRepository, ProductRepository>();
@@ -20,6 +21,7 @@ builder.Services.AddTransient<IViewInventoriesByNameUseCase, ViewInventoriesByNa
 builder.Services.AddTransient<IEditInventoryUseCase, EditInventoryUseCase>();
 builder.Services.AddTransient<IViewInventoryByIdUseCase, ViewInventoryByIdUseCase>();
 builder.Services.AddTransient<IDeleteInventoryUseCase, DeleteInventoryUseCase>();
+builder.Services.AddTransient<IDeleteProductUseCase, DeleteProductUseCase>();
 
 builder.Services.AddTransient<IViewProductsByNameUseCase, ViewProductsByNameUseCase>();
 
@@ -38,6 +40,7 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 // Requests bliver sendt til Razor Component App.razor, som håndterer routing og rendering af komponenter.
-app.MapRazorComponents<App>();
+// AddInteractiveServerRenderMode gør at der opsættes SiglenRe forbindelse til server (Server interactivity)
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
 app.Run();

@@ -68,7 +68,7 @@ public class ProductRepository : IProductRepository
        return await Task.FromResult(_products.FirstOrDefault(x => x.ProductId == id));
     }
 
-    public async Task DeleteProductAsync(int productId)
+    public async Task DeleteProductByIdAsync(int productId)
     {
         // Find Product i listen
         var productToDelete = _products.FirstOrDefault(x => x.ProductId == productId);
