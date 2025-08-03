@@ -11,24 +11,26 @@
             <a class="btn btn-light" href="/editProduct/@Product.ProductId">Edit</a>
         </td>
         <td>
-            <button 
-                type="button" 
-                class="btn btn-light" 
-                @onclick="async () => { await HandleDelete(Product.ProductId)" } >Delete</button>
+            <button
+                type="button"
+                class="btn btn-light"
+                @onclick="async () => { await HandleDelete(Product.ProductId); }">
+                Delete
+            </button>
         </td>
-       
+
     </tr>
 }
 
 @code {
 
-    [Parameter] 
+    [Parameter]
     public Product? Product { get; set; }
 
     private async Task HandleDelete(int productId)
     {
         await DeleteProductUseCase.ExecuteAsync(productId);
-        this.Product = null;
+        Product = null;
     }
 
 }

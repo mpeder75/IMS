@@ -1,0 +1,63 @@
+﻿@inject IViewInventoriesByNameUseCase ViewInventoriesByNameUseCase
+
+<div class="input-group">
+    <input class="form-control"
+           placeholder="Type something name here"
+           @bind="searchFilter" @bind:event="oninput"/>
+    <button type="button" class="btn-success input-group-text" @onclick="HandleSearch">Search</button>
+</div>
+
+@if (inventories is not null && inventories.Count > 0)
+{
+    @* Denne styler listen af inventories med border ect. *@
+    <div class="search-result">
+
+        @* Dette viser listen af inventories, der matcher søgefilteret *@
+        <ul>
+            @foreach (var inv in inventories)
+            {
+                <li @key="inv.InventoryId" @onclick="() => { HandleSelectInventory(inv); }">
+                    @inv.InventoryName
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    private string _searchFilter;
+
+    [Parameter]
+    public EventCallback<Inventory> OnInventorySelected { get; set; }
+
+    // Variabel til listen af Inventories
+    private List<Inventory> inventories = new();
+
+    // Variabel der indeholder søgefilteret og component state
+    private string searchFilter
+    {
+        get => _searchFilter;
+        set
+        {
+            _searchFilter = value;
+            HandleSearch();
+        }
+    }
+
+    private async Task HandleSearch()
+    {
+        await Task.Delay(1000);
+        inventories = (await ViewInventoriesByNameUseCase.ExecuteAsync(searchFilter)).ToList();
+
+        // Opdaterer UI'en når søgningen er udført
+        StateHasChanged();
+    }
+
+    private async Task HandleSelectInventory(Inventory inventory)
+    {
+        await OnInventorySelected.InvokeAsync(inventory);
+        inventories.Clear();
+    }
+
+}
+

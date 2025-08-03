@@ -4,11 +4,11 @@ using IMS.UseCases.PluginInterfaces;
 
 namespace IMS.UseCases.Inventories;
 
-public class EditInventoryUseCase : IEditInventoryUseCase
+public class EditInvetoryUseCase : IEditInventoryUseCase
 {
     private readonly IInventoryRepository _inventoryRepository;
 
-    public EditInventoryUseCase(IInventoryRepository inventoryRepository)
+    public EditInvetoryUseCase(IInventoryRepository inventoryRepository)
     {
         _inventoryRepository = inventoryRepository;
     }
