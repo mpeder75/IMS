@@ -8,7 +8,12 @@
         <td>@Product.Quantity</td>
         <td>@Product.Price.ToString("C")</td>
         <td>
-            <a class="btn btn-light" href="/editProduct/@Product.ProductId">Edit</a>
+            <button
+                type="button"
+                class="btn btn-light"
+                @onclick="async () => { await HandleEdit(Product.ProductId); }">
+                Edit
+            </button>
         </td>
         <td>
             <button
@@ -18,7 +23,6 @@
                 Delete
             </button>
         </td>
-
     </tr>
 }
 
@@ -33,4 +37,8 @@
         Product = null;
     }
 
+    private async Task HandleEdit(int productId)
+    {
+        NavigationManager.NavigateTo($"/editproduct/{productId}");
+    }
 }

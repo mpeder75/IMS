@@ -5,7 +5,7 @@ namespace IMS.Plugins.InMemory;
 
 public class ProductRepository : IProductRepository
 {
-    private List<Product> _products;
+    private readonly List<Product> _products;
 
     public ProductRepository()
     {
@@ -42,15 +42,13 @@ public class ProductRepository : IProductRepository
 
     public Task UpdateProductAsync(Product product)
     {
-        if (_products.Any(x => x.ProductId != product.ProductId &&
-                                  x.ProductName.Equals(product.ProductName, StringComparison.OrdinalIgnoreCase)))
+        if (_products.Any(x => x.ProductId != product.ProductId && x.ProductName.ToLower() == product.ProductName.ToLower()))
         {
-            return Task.CompletedTask;
+           return Task.CompletedTask;
         }
-        
+
         // Find product i listen
-        var productToUpdate = _products
-            .FirstOrDefault(x => x.ProductId == product.ProductId);
+        var productToUpdate = _products.FirstOrDefault(x => x.ProductId == product.ProductId);
 
         // Hvis product findes(altså den ikker er null), så opdateres dets værdier
         if (productToUpdate is not null)
@@ -58,14 +56,49 @@ public class ProductRepository : IProductRepository
             productToUpdate.ProductName = product.ProductName;
             productToUpdate.Quantity = product.Quantity;
             productToUpdate.Price = product.Price;
+            productToUpdate.ProductInventories = product.ProductInventories;
         }
-
         return Task.CompletedTask;
     }
 
-    public async Task<Product> GetProductByIdAsync(int id)
-    { 
-       return await Task.FromResult(_products.FirstOrDefault(x => x.ProductId == id));
+    public async Task<Product?> GetProductByIdAsync(int id)
+    {
+        var prod = _products.FirstOrDefault(x => x.ProductId == id);
+
+        var newProd = new Product();
+
+        if (prod != null)
+        {
+            newProd.ProductId = prod.ProductId;
+            newProd.ProductName = prod.ProductName;
+            newProd.Quantity = prod.Quantity;
+            newProd.Price = prod.Price;
+            newProd.ProductInventories = new List<ProductInventory>();
+
+            if (prod.ProductInventories != null && prod.ProductInventories.Count > 0)
+                foreach (var prodInv in prod.ProductInventories)
+                {
+                    var newProdInv = new ProductInventory
+                    {
+                        InventoryId = prodInv.InventoryId,
+                        ProductId = prodInv.ProductId,
+                        Product = prod,
+                        Inventory = new Inventory(),
+                        InventoryQuantity = prodInv.InventoryQuantity
+                    };
+
+                    if (prodInv.Inventory != null)
+                    {
+                        newProdInv.Inventory.InventoryId = prodInv.Inventory.InventoryId;
+                        newProdInv.Inventory.InventoryName = prodInv.Inventory.InventoryName;
+                        newProdInv.Inventory.Quantity = prodInv.Inventory.Quantity;
+                        newProdInv.Inventory.Price = prodInv.Inventory.Price;
+                    }
+
+                    newProd.ProductInventories.Add(newProdInv);
+                }
+        }
+        return await Task.FromResult(newProd);
     }
 
     public async Task DeleteProductByIdAsync(int productId)
@@ -73,10 +106,7 @@ public class ProductRepository : IProductRepository
         // Find Product i listen
         var productToDelete = _products.FirstOrDefault(x => x.ProductId == productId);
 
-        if (productToDelete is not null)
-        {
-            _products.Remove(productToDelete);
-        }
+        if (productToDelete is not null) _products.Remove(productToDelete);
         await Task.CompletedTask;
     }
 }

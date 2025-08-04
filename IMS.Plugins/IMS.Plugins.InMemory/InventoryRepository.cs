@@ -65,9 +65,9 @@ public class InventoryRepository : IInventoryRepository
         return Task.CompletedTask;
     }
 
-    public async Task<Inventory> GetInventoryByIdAsync(int id)
-    { 
-       return await Task.FromResult(_inventories.FirstOrDefault(x => x.InventoryId == id));
+    public async Task<Inventory> GetInventoryByIdAsync(int inventoryId)
+    {
+        return await Task.FromResult(_inventories.First(x => x.InventoryId == inventoryId));
     }
 
     public async Task DeleteInventoryAsync(int inventoryId)
