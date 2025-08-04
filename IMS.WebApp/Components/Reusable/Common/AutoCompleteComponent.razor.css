@@ -2,7 +2,7 @@
     overflow-y: auto;
     max-height: 300px;
     border: 1px solid silver;
-    padding-top: 5px;    
+    padding-top: 5px;
 }
 
 div ul {
@@ -11,10 +11,10 @@ div ul {
     padding-left: 10px;
 }
 
-div ul li {    
+div ul li {
     cursor: pointer;
 }
 
-selected {
- background-color: antiquewhite
+.selected {
+    background-color: antiquewhite;
 }
